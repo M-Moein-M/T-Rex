@@ -27,5 +27,8 @@
     left: 50px;
     width: 90px;
     height: 100px;
+}
 
+.obstacle{
+    border: 1px black solid;
 }
