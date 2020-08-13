@@ -21,9 +21,25 @@ function gameInit() {
         const obstacleCreationTime = 2000; // 2000 ns, this indicates how fast an obstacle get shown on the game
         createObstacleInterval = setInterval(createObstacle, obstacleCreationTime);
 
-        moveObstacleInterval = setInterval(moveAllObstacles, 10);
+        moveObstacleInterval = setInterval(moveAllObstacles, 15);
     }
 
+    function checkForCollision(obstacleElement) { // this function will check the collision of input with TRex
+        let id = obstacleElement.getAttribute('id');
+        let obstacle = document.getElementById(id); // this is used to access the attributes of the obstacle
+
+        let TRexImage = document.getElementById('TRex-image');
+
+        // TRex-image left = 50px
+        if (25 + 50 >= getElementPosition(obstacle, 'left')  // 25 + 50 is the middle of the image
+            && 20 + 50 <= getElementPosition(obstacle, 'left') + Number(obstacle.style.width.replace('px', ''))
+            && getElementPosition(TRexImage, 'bottom') <= Number(obstacle.style.height.replace('px',''))) {
+                clearInterval(createObstacleInterval);
+                clearInterval(moveObstacleInterval);
+        }
+
+
+    }
 
     function moveAllObstacles() {
         let allObstacles = document.querySelectorAll('.obstacle');
@@ -33,6 +49,8 @@ function gameInit() {
             obstacleElement.style.left = (getElementPosition(obstacleElement, 'left') + 2 * obstacleVelocity).toString() + 'px';
             // we use '2*obstacleVelocity' since we don't want to enlarge the obstacles too much but we want to obstacles to be faster
             // we use obstacleVelocity to calculate maximum of obstacle width when we random its width
+
+            checkForCollision(allObstacles[i]);
 
             if (getElementPosition(obstacleElement, 'left') < -200) {// 200 is a reasonable amount for deleting the obstacle when it goes out of the game frame
                 gameFrameDiv.removeChild(obstacleElement);
@@ -57,7 +75,6 @@ function gameInit() {
         let obstacleWidth = Math.floor(Math.random() * (calcMaxObstacleWidth(obstacleHeight) - 40) + 20); // to make sure the obstacle has some width
 
         let gameFrameDivWidth = gameFrameDiv.style.width = '1000px';
-        console.log(gameFrameDivWidth);
 
         obstacle.style.left = gameFrameDivWidth;
         obstacle.style.width = obstacleWidth.toString() + 'px';
@@ -92,7 +109,6 @@ function gameInit() {
         if (TRexFlyingStatus)
             return;
 
-        console.log('we are taking off');
 
         TRexFlyingStatus = true;  // we're ready to take off :P
         let TRexImage = document.getElementById('TRex-image');

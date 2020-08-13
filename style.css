@@ -33,6 +33,7 @@
 }
 
 .TRex-image{
+    /*changing these elements will interfere with the collision function in app.js*/
     left: 50px;
     width: 90px;
     height: 100px;
@@ -40,4 +41,5 @@
 
 .obstacle{
     border: 1px black solid;
+    border-radius: 3px;
 }
