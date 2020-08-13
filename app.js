@@ -1,7 +1,7 @@
 function gameInit() {
 
     const initialVelocityY = 17;  // these numbers are set by testing, with vy=17 and acceleration=-1.1 the maximum height will be around 131 pixels
-    const acceleration = -1.1;
+    let acceleration = -1.1;  // dont change this value since we used it again in TRexJump function
 
 
     const obstacleVelocity = -2.5;
@@ -107,15 +107,24 @@ function gameInit() {
             if (getElementPosition(TRexImage, 'bottom') < 0) {
                 TRexImage.style.bottom = '0';  // in case we went under the ground this line will pull us up
                 TRexFlyingStatus = false;
+                acceleration = -1.1; // for the times user hits downkey we want to force the TRex to get down faster.
+                                    // This will undo the changes after the TRex finishes the jump
+
                 clearInterval(interval);
             }
         }, 18);
 
     }
 
+    function TRexForceDown(){
+        acceleration = -8;
+    }
+
     window.addEventListener('keydown', function (event) {
         if (event.code === 'ArrowUp')
             TRexJump();
+        else if (event.code === 'ArrowDown')
+            TRexForceDown();
     })
 
 
