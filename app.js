@@ -20,7 +20,7 @@ function gameInit() {
 
     function startGame() { // this function will start the game (starts new game to play again after losing)
         // and we will call this function at the very end of the 'gameInit' function
-        const obstacleCreationTime = 1900; // 2000 ns, this indicates how fast an obstacle get shown on the game
+        const obstacleCreationTime = 1300; // 2000 ns, this indicates how fast an obstacle get shown on the game
         createObstacleInterval = setInterval(createObstacle, obstacleCreationTime);
         moveObstacleInterval = setInterval(moveAllObstacles, 10);
 
@@ -101,7 +101,7 @@ function gameInit() {
 
         let gameFrameDivWidth = gameFrameDiv.style.width = '1000px';
 
-        obstacle.style.left = gameFrameDivWidth;
+        obstacle.style.left = (Number(gameFrameDivWidth.replace('px', '')) + Math.floor(Math.random()*300)).toString()+'px'; // we add a random number so that all the distance between obstacles differ
         obstacle.style.width = obstacleWidth.toString() + 'px';
         obstacle.style.height = obstacleHeight.toString() + 'px';
 
