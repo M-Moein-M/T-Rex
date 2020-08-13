@@ -108,7 +108,7 @@ function gameInit() {
                 TRexImage.style.bottom = '0';  // in case we went under the ground this line will pull us up
                 TRexFlyingStatus = false;
                 acceleration = -1.1; // for the times user hits downkey we want to force the TRex to get down faster.
-                                    // This will undo the changes after the TRex finishes the jump
+                // This will undo the changes after the TRex finishes the jump
 
                 clearInterval(interval);
             }
@@ -116,7 +116,7 @@ function gameInit() {
 
     }
 
-    function TRexForceDown(){
+    function TRexForceDown() {
         acceleration = -8;
     }
 
@@ -126,7 +126,6 @@ function gameInit() {
         else if (event.code === 'ArrowDown')
             TRexForceDown();
     })
-
 
     startGame();
 }
