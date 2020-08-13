@@ -1,5 +1,7 @@
 function gameInit() {
 
+    let playerScore;
+
     const initialVelocityY = 17;  // these numbers are set by testing, with vy=17 and acceleration=-1.1 the maximum height will be around 131 pixels
     let acceleration = -1.1;  // dont change this value since we used it again in TRexJump function
 
@@ -18,10 +20,27 @@ function gameInit() {
 
     function startGame() { // this function will start the game (starts new game to play again after losing)
         // and we will call this function at the very end of the 'gameInit' function
-        const obstacleCreationTime = 2000; // 2000 ns, this indicates how fast an obstacle get shown on the game
+        const obstacleCreationTime = 1900; // 2000 ns, this indicates how fast an obstacle get shown on the game
         createObstacleInterval = setInterval(createObstacle, obstacleCreationTime);
 
-        moveObstacleInterval = setInterval(moveAllObstacles, 15);
+        moveObstacleInterval = setInterval(moveAllObstacles, 10);
+
+        playerScore = 0;
+
+        // loading player personal best
+        if (localStorage.getItem('personal_best')){
+            document.querySelector('#player-personal-best').innerHTML = 'Personal best:'+JSON.parse(localStorage.getItem('personal_best'));
+        }else{
+            localStorage.setItem('personal_best', '0');
+            document.querySelector('#player-personal-best').innerHTML = 'Personal best:'+'0';
+        }
+
+    }
+
+    function refreshPersonalBest(){
+        let lastScore = Number(JSON.parse(localStorage.getItem('personal_best')));
+        if (playerScore/15 > lastScore)
+            localStorage.setItem('personal_best', Math.floor(playerScore/15).toString());
     }
 
     function checkForCollision(obstacleElement) { // this function will check the collision of input with TRex
@@ -31,14 +50,20 @@ function gameInit() {
         let TRexImage = document.getElementById('TRex-image');
 
         // TRex-image left = 50px
-        if (25 + 50 >= getElementPosition(obstacle, 'left')  // 25 + 50 is the middle of the image
-            && 20 + 50 <= getElementPosition(obstacle, 'left') + Number(obstacle.style.width.replace('px', ''))
-            && getElementPosition(TRexImage, 'bottom') <= Number(obstacle.style.height.replace('px',''))) {
-                clearInterval(createObstacleInterval);
-                clearInterval(moveObstacleInterval);
+        if (45 + 50 - 20 >= getElementPosition(obstacle, 'left')  // 45 + 50 is the middle of the image. 20 is for a bit of offset
+            && 45 + 50 + 20 <= getElementPosition(obstacle, 'left') + Number(obstacle.style.width.replace('px', ''))
+            && getElementPosition(TRexImage, 'bottom') <= Number(obstacle.style.height.replace('px', ''))) {
+            clearInterval(createObstacleInterval);
+            clearInterval(moveObstacleInterval);
+            refreshPersonalBest();
         }
 
 
+    }
+
+    function refreshPlayerScore(){
+        playerScore++;
+        document.querySelector('#player-score').innerHTML = 'Score:' + Math.floor(playerScore/15).toString();
     }
 
     function moveAllObstacles() {
@@ -55,8 +80,8 @@ function gameInit() {
             if (getElementPosition(obstacleElement, 'left') < -200) {// 200 is a reasonable amount for deleting the obstacle when it goes out of the game frame
                 gameFrameDiv.removeChild(obstacleElement);
             }
-
         }
+        refreshPlayerScore(); // after moving the obstacles we refresh players score
     }
 
     let obstacleCount = 0; // This variable will keep track of the number of obstacles that were created so far.
