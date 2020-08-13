@@ -22,25 +22,24 @@ function gameInit() {
         // and we will call this function at the very end of the 'gameInit' function
         const obstacleCreationTime = 1900; // 2000 ns, this indicates how fast an obstacle get shown on the game
         createObstacleInterval = setInterval(createObstacle, obstacleCreationTime);
-
         moveObstacleInterval = setInterval(moveAllObstacles, 10);
 
         playerScore = 0;
 
         // loading player personal best
-        if (localStorage.getItem('personal_best')){
-            document.querySelector('#player-personal-best').innerHTML = 'Personal best:'+JSON.parse(localStorage.getItem('personal_best'));
-        }else{
+        if (localStorage.getItem('personal_best')) {
+            document.querySelector('#player-personal-best').innerHTML = 'Personal best:' + JSON.parse(localStorage.getItem('personal_best'));
+        } else {
             localStorage.setItem('personal_best', '0');
-            document.querySelector('#player-personal-best').innerHTML = 'Personal best:'+'0';
+            document.querySelector('#player-personal-best').innerHTML = 'Personal best:' + '0';
         }
 
     }
 
-    function refreshPersonalBest(){
+    function refreshPersonalBest() {
         let lastScore = Number(JSON.parse(localStorage.getItem('personal_best')));
-        if (playerScore/15 > lastScore)
-            localStorage.setItem('personal_best', Math.floor(playerScore/15).toString());
+        if (playerScore / 15 > lastScore)
+            localStorage.setItem('personal_best', Math.floor(playerScore / 15).toString());
     }
 
     function checkForCollision(obstacleElement) { // this function will check the collision of input with TRex
@@ -50,20 +49,21 @@ function gameInit() {
         let TRexImage = document.getElementById('TRex-image');
 
         // TRex-image left = 50px
-        if (45 + 50 - 20 >= getElementPosition(obstacle, 'left')  // 45 + 50 is the middle of the image. 20 is for a bit of offset
-            && 45 + 50 + 20 <= getElementPosition(obstacle, 'left') + Number(obstacle.style.width.replace('px', ''))
+        if (45 + 50 +10>= getElementPosition(obstacle, 'left')  // 45 + 50 is the middle of the image. 10 is for a bit of offset
+            && 45 + 50 - 10<= getElementPosition(obstacle, 'left') + Number(obstacle.style.width.replace('px', ''))
             && getElementPosition(TRexImage, 'bottom') <= Number(obstacle.style.height.replace('px', ''))) {
             clearInterval(createObstacleInterval);
             clearInterval(moveObstacleInterval);
             refreshPersonalBest();
+            document.getElementById('restart-button').classList.remove('hide'); // enable the option for restarting new game
         }
 
 
     }
 
-    function refreshPlayerScore(){
+    function refreshPlayerScore() {
         playerScore++;
-        document.querySelector('#player-score').innerHTML = 'Score:' + Math.floor(playerScore/15).toString();
+        document.querySelector('#player-score').innerHTML = 'Score:' + Math.floor(playerScore / 15).toString();
     }
 
     function moveAllObstacles() {
@@ -160,6 +160,17 @@ function gameInit() {
     function TRexForceDown() {
         acceleration = -8;
     }
+
+
+    document.getElementById('restart-button').addEventListener('click', function () { // restart button
+        // for restarting the game we should call the gameInit function and remove all the children of the game-frame-div
+        while (gameFrameDiv.childElementCount > 1) // since the first child is TRex image, we dont want to remove that image from the children list
+            gameFrameDiv.removeChild(gameFrameDiv.children[1]);
+        clearInterval(moveObstacleInterval);
+        clearInterval(createObstacleInterval);
+        this.classList.add('hide');
+        startGame();
+    });
 
     window.addEventListener('keydown', function (event) {
         if (event.code === 'ArrowUp')

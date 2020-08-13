@@ -43,3 +43,14 @@
     border: 1px black solid;
     border-radius: 3px;
 }
+
+#restart-button{
+    width: 90px;
+    height: 30px;
+    background-color: #f85959;
+    border-radius: 6px;
+}
+
+.hide{
+    display: none;
+}
